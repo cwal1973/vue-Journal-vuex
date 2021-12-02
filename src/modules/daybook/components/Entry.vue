@@ -9,7 +9,7 @@
         <span class="mx-2 fw-light">{{annoDia}}</span>
     </div>
     <div class="entry-description">
-        {{cortoTexto}}
+        {{textoCorto}}
     </div>
   </div>
 </template> 
@@ -28,7 +28,7 @@ export default {
         }
     },
     computed:{
-        cortoTexto(){
+        textoCorto(){
             return (this.entry.text.length > 130)
                      ? this.entry.text.substring(0,130)+'...'
                      : this.entry.text

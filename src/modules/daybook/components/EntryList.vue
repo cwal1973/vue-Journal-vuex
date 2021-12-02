@@ -23,9 +23,9 @@ export default {
     Entry:defineAsyncComponent(()=> import('./Entry.vue'))
   },
   computed:{
-    ...mapGetters('journal',['getEntryByTerm']),
+    ...mapGetters('journal',['getEntriesByTerm']),
     entriesByTerm(){
-      return this.getEntryByTerm(this.term)
+      return this.getEntriesByTerm(this.term)
     }
   },
   data(){
