@@ -18,8 +18,10 @@
   </div>
   <hr />
   <div class="d-flex flex-column pc-3 h-75">
-    <textarea placeholder="Que sucedio Ayer?"> </textarea>
-    <h1>{{entriesById}}</h1>
+    <textarea 
+      v-model="entry.text"
+      placeholder="Que sucedio Ayer?"> </textarea>
+    <h1>nada</h1>
   </div>
   <Fab icono="fa-save"/>
   <img src="https://www.ctcmarketing.co.za/media/k2/items/cache/77e3798bb9782084333898c5f75d9aab_XL.jpg" alt="entry-picture"
@@ -40,14 +42,27 @@ export default {
   components: {
     Fab: defineAsyncComponent(() => import("../components/Fab.vue")),
   },
+ 
+  data(){
+    return {
+      entry: null
+    }
+
+  },
+
   computed:{
-    ...mapGetters('journal',['getEntryById']),
-    entriesById(){
-      return this.getEntryById(this.id)
+    ...mapGetters('journal',['getEntryById']) 
+     
+  },
+  methods: {
+    loadEntry(){
+      const entry = this.getEntryById(this.id)
+      if (!entry) this.$router.push('no-entry')
+      this.entry = entry
     }
   },
   created(){
-    console.log(this.id)
+    this.loadEntry()
   }
 };
 </script>

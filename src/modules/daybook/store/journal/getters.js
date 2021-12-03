@@ -10,8 +10,10 @@ export const getEntriesByTerm =  ( state ) => ( term='') =>  {
 }
 
 export const getEntryById =  ( state ) => ( id = '') =>{
-    if (id.length==0) return null
-    return state.entries.filter(entry => entry.id === id)
+    const entry = state.entries.find(entry => entry.id === id)
+    if ( !entry ) return 
+    // se dispersa para que la entry no se devuelva por referencia y no modifique el state,
+    return { ...entry }   // TODO prueben
 
     
 }
