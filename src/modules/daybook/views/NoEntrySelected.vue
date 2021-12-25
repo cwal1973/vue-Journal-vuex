@@ -1,13 +1,14 @@
- <template>
+<template>
    <div class="d-flex justify-content-center">
        <h1 class="align-self-center">No hay nada selecionado</h1>
    </div>
    <Fab icon="fa-plus"/>
- </template>
+</template>
 
 <script> 
- import { defineAsyncComponent } from 'vue'
-  export default {
+import { defineAsyncComponent } from "vue"
+
+export default {
     components:{
      Fab: defineAsyncComponent(()=>import('../components/Fab.vue'))
     }

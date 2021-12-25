@@ -6,7 +6,7 @@
     <div class="entry-title d-flex">
         <span class="text-sucess fs-5 fw-bold">{{dia}}</span>
         <span class="mx-1 fs-5">{{mes}}</span>
-        <span class="mx-2 fw-light">{{annoDia}}</span>
+        <span class="mx-2 fw-light">{{anoDia}}</span>
     </div>
     <div class="entry-description">
         {{textoCorto}}
@@ -16,9 +16,7 @@
  
  
 <script>
-
-const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
-const dias  = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado']
+import getDayMonthYear from '../components/helpers/getDayMonthYear.js'
 
 export default {
     props:{
@@ -34,16 +32,18 @@ export default {
                      : this.entry.text
         },
         dia(){
-            const date  = new Date(this.entry.date)
-            return date.getDate()
+        const { day } = getDayMonthYear(this.entry.date)
+        return day
         },
         mes(){
-            const date  = new Date(this.entry.date)
-            return meses[date.getMonth()]
+        const { month } = getDayMonthYear(this.entry.date)
+        return month
+
         },
-        annoDia(){
-            const date  = new Date(this.entry.date)
-            return `${date.getFullYear()} , ${dias[date.getDay()]}`
+        anoDia(){
+        const { yearDay } = getDayMonthYear(this.entry.date)
+        return yearDay
+
         }
 
     }
