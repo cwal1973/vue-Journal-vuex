@@ -6,6 +6,15 @@
              placeholder="Buscar entrada"
              v-model="term">
     </div>
+    <div class="mt-2 d-flex flex-column"> 
+      <button class="btn btn-primary mx-3"
+          @click="crearNuevaEntrada">
+        <i class="fa fa-plus-circle"
+        
+        ></i>
+        Nueva Entrada
+    </button>
+    </div>
     <div class="entry-scrollarea">
       <Entry v-for="entry in entriesByTerm" 
              :key="entry.id"
@@ -26,6 +35,11 @@ export default {
     ...mapGetters('journal',['getEntriesByTerm']),
     entriesByTerm(){
       return this.getEntriesByTerm(this.term)
+    }
+  },
+  methods:{
+    crearNuevaEntrada(){
+        this.$router.push( { name: 'daybook-entry', params: {id: 'new' } } )
     }
   },
   data(){

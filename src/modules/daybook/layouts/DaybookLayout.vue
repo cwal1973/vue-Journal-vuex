@@ -20,7 +20,7 @@
 
 <script>
 import { defineAsyncComponent } from 'vue'
-import {mapActions, mapState}  from 'vuex'
+import { mapActions, mapState }  from 'vuex'
 export default {
 
    data(){

@@ -8,11 +8,20 @@
         <span class="mx-2 fs-4 fw-light">{{ yearDay }}</span>
       </div>
       <div>
-        <button class="btn btn-danger ms-2">
+        <input type="file"
+              @change="onSelectedImage"
+              ref="imageSelector"
+              v-show="false"
+              accept="image/png, image/jpg, image/jpeg">
+
+        <button v-if="entry.id" class="btn btn-danger ms-2"
+            @click="onDeleteEntry"
+               >
           Borrar
           <i class="fa fa-trash-alt"></i>
         </button>
-        <button class="btn btn-primary">
+        <button class="btn btn-primary"
+              @click="onSelectImage">
           Subir Foto
           <i class="fa fa-upload"></i>
         </button>
@@ -26,8 +35,14 @@
      
     </div>
  
-    <img src="https://www.ctcmarketing.co.za/media/k2/items/cache/77e3798bb9782084333898c5f75d9aab_XL.jpg" alt="entry-picture"
-    class="img-thumbnail">
+    <img v-if="entry.picture"
+         :src="entry.picture" 
+         alt="entry-picture"
+         class="img-thumbnail"> 
+    <img v-if="localImage"
+         :src="localImage" 
+         alt="entry-picture"
+         class="img-thumbnail">
   </template>
   <Fab 
     icono="fa-save" 
@@ -36,10 +51,11 @@
 
 <script>
 import { defineAsyncComponent } from "vue";
-import { mapGetters } from 'vuex'
+import { mapGetters , mapActions} from 'vuex'
+import Swal from 'sweetalert2'  
 
 import getDayMonthYear from '../components/helpers/getDayMonthYear.js'
-
+import uploadImage from '../components/helpers/uploadImage.js'
 
 export default {
   props:{
@@ -54,7 +70,9 @@ export default {
  
   data(){
     return {
-      entry:null
+      entry: null,
+      localImage: null,
+      file: null
     }
   },
  
@@ -78,13 +96,80 @@ export default {
      
   },
   methods: {
+     ...mapActions('journal',['updateEntries','createEntries','deleteEntry']),
     loadEntry(){
-      const entry = this.getEntryById(this.id)
-      if (!entry) return this.$router.push({name:'daybook-no-entry'})
+      let entry
+      if (this.id === 'new') {
+        entry = { 
+          date: new Date().getTime(),
+          text:''
+          }
+      } else {
+        entry = this.getEntryById(this.id)
+        if (!entry) return this.$router.push({name:'daybook-no-entry'})
+      }
       this.entry = entry
     },
     async saveEntry(){
-      console.log('guardando entradas')
+      new Swal({
+        title:'Espere por favor',
+        allowOutsideClick: false
+      })
+      Swal.showLoading()
+      const picture = await uploadImage( this.file )
+      this.entry.picture = picture 
+      this.file = null
+      this.localImage = null
+
+      if (this.entry.id) {
+        await this.updateEntries(this.entry)
+      } else{
+        const id = await this.createEntries(this.entry)
+     
+        this.$router.push({ name: 'daybook-entry' , params: {id} } )
+      }
+      Swal.fire('Guardado','Entrada registrada correctamente','success')
+    },
+    async onDeleteEntry(){   
+         const { isConfirmed} = await Swal.fire({
+           title:'Esta seguro ?',
+           text: 'una vez eliminado, no se podra recuperar',
+           showDenyButton: true,
+           confirmButtonText: 'Si estoy seguro'
+         })  
+        
+         if ( isConfirmed){
+            new Swal({
+              title:'Espere por favor',
+              allowOutsideClick: false
+            }) 
+            Swal.showLoading()
+            const id = await this.deleteEntry(this.entry.id)
+    
+            this.$router.push({ name: 'daybook-no-entry'  } )
+            Swal.fire('Eliminado','','success')
+        }
+    },
+    onSelectedImage( evento ){
+      const file = evento.target.files[0]
+      if ( !file ) { 
+        this.localImage = null
+        this.file = null
+        return 
+      }
+      this.file = file
+
+      const fr = new FileReader()
+      fr.onload = () => this.localImage = fr.result
+      fr.readAsDataURL( file )
+
+
+
+    },
+    onSelectImage(){
+      this.$refs.imageSelector.click()
+     
+
     }
 
   },
