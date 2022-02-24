@@ -9,6 +9,11 @@ const useAuth = () => {
     return resp
   }
 
+  const logout =() => {
+    store.commit('auth/logout')
+    store.commit('journal/clearEntries')
+  }
+
   return {
 
     createUser: async( user )=>{
@@ -24,8 +29,10 @@ const useAuth = () => {
     },
 
     authStatus: computed( () => store.getters['auth/currentState'] ),
+    userName: computed( () => store.getters['auth/userName'] ),
 
-    checkAuthStatus
+    checkAuthStatus,
+    logout
 
 
   }
